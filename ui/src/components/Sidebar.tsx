@@ -11,8 +11,10 @@ import {
   Boxes,
   Repeat,
   Settings,
+  LogOut,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { SidebarSection } from "./SidebarSection";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { SidebarProjects } from "./SidebarProjects";
@@ -20,6 +22,7 @@ import { SidebarAgents } from "./SidebarAgents";
 import { useDialog } from "../context/DialogContext";
 import { useCompany } from "../context/CompanyContext";
 import { heartbeatsApi } from "../api/heartbeats";
+import { authApi } from "../api/auth";
 import { queryKeys } from "../lib/queryKeys";
 import { useInboxBadge } from "../hooks/useInboxBadge";
 import { Button } from "@/components/ui/button";
@@ -29,6 +32,19 @@ export function Sidebar() {
   const { openNewIssue } = useDialog();
   const { selectedCompanyId, selectedCompany } = useCompany();
   const inboxBadge = useInboxBadge(selectedCompanyId);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  async function handleSignOut() {
+    try {
+      await authApi.signOut();
+      await queryClient.invalidateQueries({ queryKey: queryKeys.auth.session });
+      navigate("/auth");
+    } catch {
+      // Force redirect even if sign-out API fails
+      window.location.href = "/auth";
+    }
+  }
   const { data: liveRuns } = useQuery({
     queryKey: queryKeys.liveRuns(selectedCompanyId!),
     queryFn: () => heartbeatsApi.liveRunsForCompany(selectedCompanyId!),
@@ -123,6 +139,17 @@ export function Sidebar() {
           missingBehavior="placeholder"
         />
       </nav>
+
+      {/* Sign out */}
+      <div className="shrink-0 border-t border-border px-3 py-2">
+        <button
+          onClick={handleSignOut}
+          className="flex w-full items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors rounded-md"
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          <span className="truncate">Sign out</span>
+        </button>
+      </div>
     </aside>
   );
 }
