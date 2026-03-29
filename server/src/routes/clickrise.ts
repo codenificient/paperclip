@@ -69,13 +69,13 @@ export function clickriseRoutes() {
       ]);
 
       const projectMap = new Map<string, string>();
-      if (projects?.projects) {
-        for (const p of projects.projects) {
-          projectMap.set(p.id, p.name);
-        }
+      const projectList = projects?.data?.projects ?? projects?.projects ?? [];
+      for (const p of projectList) {
+        projectMap.set(p.id, p.name);
       }
 
-      const tasks = (result?.tasks || []).map((t: Record<string, unknown>) => ({
+      const taskList = result?.data?.tasks ?? result?.tasks ?? [];
+      const tasks = taskList.map((t: Record<string, unknown>) => ({
         ...t,
         projectName: projectMap.get(t.projectId as string) || "Unknown",
       }));
@@ -90,7 +90,7 @@ export function clickriseRoutes() {
       const response = {
         tasks,
         grouped,
-        projects: projects?.projects || [],
+        projects: projectList,
         summary: {
           total: tasks.length,
           inProgress: grouped.in_progress.length,
