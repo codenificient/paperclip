@@ -29,6 +29,7 @@ import { queryKeys } from "../lib/queryKeys";
 import { useInboxBadge } from "../hooks/useInboxBadge";
 import { Button } from "@/components/ui/button";
 import { PluginSlotOutlet } from "@/plugins/slots";
+import { SidebarClickRise } from "./SidebarClickRise";
 
 export function Sidebar() {
   const { openNewIssue } = useDialog();
@@ -138,6 +139,8 @@ export function Sidebar() {
         <SidebarProjects />
 
         <SidebarAgents />
+
+        <SidebarClickRise />
 
         <SidebarSection label="Company">
           <SidebarNavItem to="/org" label="Org" icon={Network} />

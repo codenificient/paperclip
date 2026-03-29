@@ -25,6 +25,7 @@ import { activityRoutes } from "./routes/activity.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
 import { sidebarBadgeRoutes } from "./routes/sidebar-badges.js";
 import { instanceSettingsRoutes } from "./routes/instance-settings.js";
+import { clickriseRoutes } from "./routes/clickrise.js";
 import { llmRoutes } from "./routes/llms.js";
 import { assetRoutes } from "./routes/assets.js";
 import { accessRoutes } from "./routes/access.js";
@@ -154,6 +155,7 @@ export async function createApp(
   api.use(activityRoutes(db));
   api.use(dashboardRoutes(db));
   api.use(sidebarBadgeRoutes(db));
+  api.use(clickriseRoutes());
   api.use(instanceSettingsRoutes(db));
   const hostServicesDisposers = new Map<string, () => void>();
   const workerManager = createPluginWorkerManager();
